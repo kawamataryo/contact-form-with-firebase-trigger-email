@@ -18,6 +18,12 @@ npm i -g firebase-tools
 firebase use YOUR_PROJECT_NAME
 ```
 
+Set enviroment variables.
+```
+cp .env.sample .env
+# set firebase enviroment variables to .env
+```
+
 Set admin email address.
 ```
 firebase functions:config:set mail.admin_address="example@example.com"
