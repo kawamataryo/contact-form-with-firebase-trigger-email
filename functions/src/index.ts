@@ -1,6 +1,11 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { adminMailBody, thanksMailBody } from "./lib/mailBody";
+import * as dayjs from "dayjs";
+import * as timezone from "dayjs/plugin/timezone";
+import * as utc from "dayjs/plugin/utc";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -34,4 +39,18 @@ export const sendMail = functions
 
     await db.collection("mail").add(adminMailData);
     await db.collection("mail").add(thanksMailData);
+  });
+
+export const now = functions
+  .region("asia-northeast1")
+  .https.onRequest((req, res) => {
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    dayjs.tz.setDefault("Asia/Tokyo");
+
+    cors(req, res, () => {
+      res.send({
+        time: dayjs.tz(dayjs()).format("YYYY-MM-DD HH:mm:ss"),
+      });
+    });
   });
